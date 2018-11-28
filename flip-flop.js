@@ -1,19 +1,33 @@
 var levelTrigger = (function() {
-  var state = null
+  var memoryObj = {
+    000: null,
+    001: null,
+    010: null,
+    011: null,
+    100: null,
+    101: null,
+    110: null,
+    111: null
+  }
 
   return {
-    getState: function () {
-      return state
+    getState: function (address) {
+      if (!address) {
+        throw new Error('Cannot access memory at undefined location')
+      }
+
+      try {
+        return memoryObj[address]
+      } catch (e) {
+        throw new Error('Segmentation fault')
+      }
     },
 
-    flipflop: function (data, write) {
-      state = write ? data : state
+    writeData: function (address, data, write) {
+      write ? memoryObj[address] = data : null
     }
   }
 })()
 
-levelTrigger.flipflop(0, 1)
-levelTrigger.flipflop(1, 1)
-levelTrigger.flipflop(0, 0)
-var result = levelTrigger.getState()
-console.log(result)
+
+levelTrigger.writeData(001, 1, 1)
